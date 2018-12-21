@@ -5,10 +5,14 @@ SA Id validator
 ##about
 This app validates SA id's one by one, or in a batch
 
-##configuring
-<!-- shotty uses the configuration file created by the AWS cli e.g.
-`aws configure --profgile shotty` -->
+
 
 ##running
 
-'pipenv run pyfthon ValidateID.py' <input> id number
+`pipenv run python RSAIDTool.py` <command> <subcommand> <--id 6902123093080>
+
+`pipenv run python RSAIDTool.py` <command> <subcommand> <--path '/tmp/somefile.json'>
+
+*command* is id
+ 
+*sub command* depends on command
