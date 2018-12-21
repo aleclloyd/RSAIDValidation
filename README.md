@@ -11,5 +11,4 @@ This app validates SA id's one by one, or in a batch
 
 ##running
 
-<!-- `pipenv run python shjotty/shotty.py` <command> <subcommandf> <--project=PROJECT> -->
-'pipenv run python ValidateID.py' <input> id number
+'pipenv run pyfthon ValidateID.py' <input> id number

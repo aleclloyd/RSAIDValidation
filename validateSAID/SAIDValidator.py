@@ -1,12 +1,7 @@
 def isSAIdValid(idNumber):
-    try:
-        id = int(idNumber)
-    except:
-        idObj = {"ID": idNumber, "Gender": "", "Valid": "false"}
-        return idObj
 
-    if not id or not isinstance(id, int) or not len(str(id)) == 13:
-        idObj = {"ID": id, "Gender": "", "Valid": "false"}
+    if not idNumber or not isinstance(int(idNumber),int) or not len(idNumber) == 13:
+        idObj = {"ID": idNumber, "Gender": "", "Valid": "false"}
         return idObj
 
     num1 = 0
@@ -17,17 +12,19 @@ def isSAIdValid(idNumber):
     i = 0
 
     while i <= 5:
-        num1 += (int(str(id)[i * 2]))
+        num1 += (int(idNumber[i * 2]))
         i += 1
 
     i = 0
     while i <= 5:
-        temp = temp + (str(id)[i * 2 + 1])
+        temp = temp + (idNumber[i * 2 + 1])
         i += 1
 
     tempNumber = int(temp) * 2
     templen = len(str(tempNumber))
+    # print(templen)
     for n in range(0, templen):
+        # print(num2)
         num2 += int(str(tempNumber)[n])
 
     num3 = num1 + num2
@@ -37,16 +34,16 @@ def isSAIdValid(idNumber):
     if digit == 10:
         digit = 0
 
-    if digit == int(str(id)[12]):
-        genderCode = str(id)[6]
-        # print (genderCode)
+    if digit == int(idNumber[12]):
+        genderCode = idNumber[6]
+
         if int(genderCode) in range(4):
             gender = 'f'
         else:
             gender = 'm'
 
-        idObj = {"ID": id, "Gender": gender, "Valid": "true"}
+        idObj = {"ID": idNumber, "Gender": gender, "Valid": "true"}
         return idObj
 
-    idObj = {"ID": id, "Gender": "", "Valid": "false"}
+    idObj = {"ID": idNumber, "Gender": "", "Valid": "false"}
     return idObj
