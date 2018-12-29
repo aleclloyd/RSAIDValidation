@@ -6,7 +6,6 @@ SA Id validator
 This app validates SA id's one by one, or in a batch
 
 
-
 ##running
 
 `pipenv run python RSAIDTool.py` <command> <subcommand> <--id 6902123093080>
