@@ -1,12 +1,15 @@
 import datetime
+
 # pipenv run python RSAIDTool.py id validatebatch --path '/Users/aleclloyd/Documents/projects/python/RSAIDValidation/validateSAID/sample.json'
 # pipenv run python RSAIDTool.py id validate --id 8004125094080
+
+pivotyear = 10
 
 
 def isSAIdValid(idNumber):
     if not idNumber or not isinstance(int(idNumber), int) or not len(idNumber) == 13:
-        idObj = {"ID": idNumber, "Gender": "", "Valid": "false"}
-        return idObj
+        idobject = {"ID": idNumber, "Gender": "", "Valid": "false"}
+        return idobject
 
     num1 = 0
     num2 = 0
@@ -26,15 +29,12 @@ def isSAIdValid(idNumber):
 
     tempnumber = int(temp) * 2
     templen = len(str(tempnumber))
-    # print(templen)
     for n in range(0, templen):
-        # print(num2)
         num2 += int(str(tempnumber)[n])
 
     num3 = num1 + num2
 
     digit = 10 - (num3 % 10)
-    # print(digit)
     if digit == 10:
         digit = 0
 
@@ -42,38 +42,26 @@ def isSAIdValid(idNumber):
         genderCode = idNumber[6]
 
         if int(genderCode) in range(4):
-            gender = 'f'
+            gender = 'F'
         else:
-            gender = 'm'
+            gender = 'M'
 
         dob = getdob(idNumber)
-        # print(type(dob))
-        currentDate = datetime.datetime.today().strftime("%Y-%m-%d")
-        print(dob)
+        currentdate = datetime.datetime.today().strftime("%Y-%m-%d")
 
-        age = days_between(dob,currentDate)
+        age = days_between(dob, currentdate)
 
-        # age = dat currentDate-dob
-        print("Age: " + str(age/365)[:2])
-        idObj = {"ID": idNumber, "Gender": gender, "Valid": "true","Age":str(age/365)[:2]}
-        return idObj
+        idobject = {"ID": idNumber, "Gender": gender, "Valid": "true", "Age": str(age / 365)[:2]}
+        return idobject
 
-    idObj = {"ID": idNumber, "Gender": "", "Valid": "false"}
-    return idObj
+    idobject = {"ID": idNumber, "Gender": "", "Valid": "false"}
+    return idobject
 
 
 def days_between(d1, d2):
     d1 = datetime.datetime.strptime(d1, "%Y-%m-%d")
     d2 = datetime.datetime.strptime(d2, "%Y-%m-%d")
-    print("D1 {0}, D2 {1}".format(d1,d2))
     return abs((d1 - d2).days)
-
-
-def calculateage(idNumber):
-    if not idNumber or not isinstance(int(idNumber), int) or not len(idNumber) == 13:
-        return "none"
-    # datetime.datetime.today().strftime("%Y-%m-%d")
-    currentyear = datetime.datetime.today().strftime("%Y")
 
 
 def getdob(idNumber):
@@ -81,39 +69,28 @@ def getdob(idNumber):
         return "none"
 
     currentDate = datetime.datetime.today().strftime("%Y-%m-%d")
-    # print(currentDate)
     currentyear = datetime.datetime.today().strftime("%Y")
-    currentyearYY=currentyear[2:]
-    currentcentury=currentyear[:2]
-    # print(currentyear)
-    dobString=idNumber[:6]
+    currentyearYY = currentyear[2:]
+    currentcentury = currentyear[:2]
+    dobString = idNumber[:6]
     idYearYY = idNumber[:2]
-    # print("IDYearYYx" + idYearYY)
-    # print("currentyearx" + str(int(currentyear[2:]) - 10))
-    if int(idYearYY) < int(currentyear[2:]) - 10:
-        # print("IDYearYY" + idYearYY)
-        # print("currentyear" + currentyear)
+    if int(idYearYY) < int(currentyear[2:]) - pivotyear:
         dob = currentcentury + dobString
     else:
-        dob = str(int(currentcentury)-1) + dobString
+        dob = str(int(currentcentury) - 1) + dobString
 
     date = datetime.datetime.strptime(dob, '%Y%m%d').strftime('%Y-%m-%d')
-    # print(dob)
     return date
 
-    # int    currentYear = LocalDate.now().getYear();
-    # String    currentYearString = Integer.toString(currentYear);
-    # int    currentCentury = Integer.parseInt(currentYearString.substring(0, 2));
-    # int    currentYearYY = Integer.parseInt(currentYearString.substring(2, 4));
-    #
-    # int    idYearYY = Integer.parseInt(identificationNumber.substring(0, 2));
-    # LocalDate    dob;
-    # String    dobString = identificationNumber.substring(0, 6);
-    # DateTimeFormatter    dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
-    # if (idYearYY < (currentYearYY - 10)) {
-    # // current century
-    # dob = LocalDate.parse(currentCentury + dobString, dateFormat);
-    # } else {// currentcentury-1
-    # dob = LocalDate.parse(currentCentury - 1 + dobString, dateFormat);
-    # }
-    # System.out.println(dob.toString());
+
+def luhn(purported):
+    LUHN_ODD_LOOKUP = (0, 2, 4, 6, 8, 1, 3, 5, 7, 9)  # sum_of_digits (index * 2)
+
+    if not isinstance(purported, str):
+        purported = str(purported)
+    try:
+        evens = sum(int(p) for p in purported[-1::-2])
+        odds = sum(LUHN_ODD_LOOKUP[int(p)] for p in purported[-2::-2])
+        return (evens + odds) % 10 == 0
+    except ValueError:  # Raised if an int conversion fails
+        return False
